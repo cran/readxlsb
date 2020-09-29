@@ -24,6 +24,22 @@ stop_if_not_defined = function(value, msg) {
     stop(msg, call. = FALSE)
 }
 
+## Converting Excel's serial date to an R date
+## const double BASE_EXCEL_DATE = 25569 // 25569 => Excel's serial date for 1970-01-01
+excel_to_R_datetime = function(excel_datetime) {
+  if ((abs(excel_datetime)-floor(excel_datetime)) < 1e-8) {
+    # return Date object
+    return(structure(excel_datetime - 25569, class = "Date"))
+  } else {
+    # return POSIXct object
+    return(structure((excel_datetime - 25569) * 24 * 60 * 60, class = "POSIXct", "tzone" = "UTC"))
+  }
+}
+
+excel_date_to_string = function(excel_datetime) {
+  return (format(excel_to_R_datetime(excel_datetime)))
+}
+
 #' Read xlsb workbook
 #'
 #' Imports a region from an xlsb workbook 
@@ -34,7 +50,7 @@ stop_if_not_defined = function(value, msg) {
 #' @param range A named range or a string representing an excel range (of the form Sheet!A1:D10) or a cellranger object
 #' @param col_names TRUE uses the first row as the column name, FALSE sets names to column.#, or a character vector
 #' @param col_types NULL to imply type from spreadsheet or one of ignore/logical/numeric/date/string per column
-#' @param na String to interpret as missing
+#' @param na Single string or array of strings to interpret as missing
 #' @param trim_ws Trim whitespace from strings
 #' @param skip Number of rows to skip before reading data
 #' @param ... Additional options. Pass debug = TRUE to return xlsb environment
@@ -167,7 +183,7 @@ read_xlsb = function(path, sheet = NULL, range = NULL, col_names = TRUE, col_typ
   
   ## for strings that match the na parameter, set type to doule and content to NA
   idx = intersect(which(xlsb_env$content$mapped.type == CONTENT_TYPE$TYPE_STRING),
-                  which(xlsb_env$content$str.value == na))
+                  which(xlsb_env$content$str.value %in% na))
   if (length(idx) > 0) {
     xlsb_env$content$mapped.type[idx] = CONTENT_TYPE$TYPE_DOUBLE
     xlsb_env$content$double.value[idx] = NA

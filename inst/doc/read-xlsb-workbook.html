@@ -12,17 +12,33 @@
 
 <meta name="author" content="Michael Allen" />
 
-<meta name="date" content="2020-04-13" />
+<meta name="date" content="2020-09-29" />
 
 <title>Reading an xlsb workbook</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
@@ -32,14 +48,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -48,9 +66,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -301,14 +319,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Reading an xlsb workbook</h1>
 <h4 class="author">Michael Allen</h4>
-<h4 class="date">2020-04-13</h4>
+<h4 class="date">2020-09-29</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(readxlsb)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(readxlsb)</span></code></pre></div>
 <p><code>read_xlsb</code> attempts to import a region from a binary format Excel workbook (xlsb)</p>
 <p>The parameters are</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">read_xlsb</span>(path, sheet, range, col_names, col_types, na, trim_ws, skip, ...)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">read_xlsb</span>(path, sheet, range, col_names, col_types, na, trim_ws, skip, ...)</span></code></pre></div>
 <div id="sheet" class="section level2">
 <h2>sheet</h2>
 <p>Either a name, or the index of the sheet to read. Index of the first sheet is 1. If the sheet name is embedded in the range argument, or implied if range is a named range, then this argument is ignored</p>
@@ -363,24 +381,24 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="section" class="section level2">
 <h2>…</h2>
 <p>Additional options. At present just debug = TRUE is supported. This returns a list with fields ‘<em>result</em>’ set to the resulting data.frame and ‘<em>env</em>’ set to an internal environment that may be useful for debugging. <br /></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">res =<span class="st"> </span><span class="kw">read_xlsb</span>(<span class="dt">path =</span> <span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TestBook.xlsb&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;readxlsb&quot;</span>), <span class="dt">range =</span> <span class="st">&quot;PORTFOLIO&quot;</span>, <span class="dt">debug =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">ls</span>(res<span class="op">$</span>env)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; [1] &quot;content&quot;      &quot;named_ranges&quot; &quot;sheets&quot;       &quot;stream&quot;</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">res<span class="op">$</span>env<span class="op">$</span>named_ranges</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt;             name                     range sheet_idx first_column first_row</span></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt; 1   INFO_RELEASE          FirstSheet!$A$11         0            1        11</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt; 2        OUTLOOK 'My SecondTab'!$A$1:$C$13         1            1         1</span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt; 3      PORTFOLIO      FirstSheet!$A$3:$C$9         0            1         3</span></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; 4 SAVED_DATETIME          FirstSheet!$C$13         0            3        13</span></a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt; 5          TITLE           FirstSheet!$A$1         0            1         1</span></a>
-<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;   last_column last_row</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt; 1           1       11</span></a>
-<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt; 2           3       13</span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt; 3           3        9</span></a>
-<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt; 4           3       13</span></a>
-<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt; 5           1        1</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>res =<span class="st"> </span><span class="kw">read_xlsb</span>(<span class="dt">path =</span> <span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TestBook.xlsb&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;readxlsb&quot;</span>), <span class="dt">range =</span> <span class="st">&quot;PORTFOLIO&quot;</span>, <span class="dt">debug =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">ls</span>(res<span class="op">$</span>env)</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; [1] &quot;content&quot;      &quot;named_ranges&quot; &quot;sheets&quot;       &quot;stream&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>res<span class="op">$</span>env<span class="op">$</span>named_ranges</span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt;             name                     range sheet_idx first_column first_row</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 1   INFO_RELEASE          FirstSheet!$A$11         0            1        11</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; 2        OUTLOOK &#39;My SecondTab&#39;!$A$1:$C$13         1            1         1</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; 3      PORTFOLIO      FirstSheet!$A$3:$C$9         0            1         3</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; 4 SAVED_DATETIME          FirstSheet!$C$13         0            3        13</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; 5          TITLE           FirstSheet!$A$1         0            1         1</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt;   last_column last_row</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; 1           1       11</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; 2           3       13</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; 3           3        9</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; 4           3       13</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; 5           1        1</span></span></code></pre></div>
 </div>
 
 
