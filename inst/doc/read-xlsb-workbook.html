@@ -12,7 +12,7 @@
 
 <meta name="author" content="Michael Allen" />
 
-<meta name="date" content="2023-02-02" />
+<meta name="date" content="2023-02-16" />
 
 <title>Reading an xlsb workbook</title>
 
@@ -340,15 +340,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Reading an xlsb workbook</h1>
 <h4 class="author">Michael Allen</h4>
-<h4 class="date">2023-02-02</h4>
+<h4 class="date">2023-02-16</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxlsb)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(readxlsb)</span></code></pre></div>
 <p><code>read_xlsb</code> attempts to import a region from a binary
 format Excel workbook (xlsb)</p>
 <p>The parameters are</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_xlsb</span>(path, sheet, range, col_names, col_types, na, trim_ws, skip, ...)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">read_xlsb</span>(path, sheet, range, col_names, col_types, na, trim_ws, skip, ...)</span></code></pre></div>
 <div id="sheet" class="section level2">
 <h2>sheet</h2>
 <p>Either a name, or the index of the sheet to read. Index of the first
@@ -403,7 +403,7 @@ where the format string contains only the characters Y, M, D, H, S, y,
 m, d, h, s and - (dash), : (colon), (space), . (dot). That should be
 good enough to identify any dates.</p>
 <p>If ‘<em>date</em>’ is specified as the column type, then any strings
-are converted to dates. The format I’m afraid isn’t flexible at this
+are converted to dates. The format, I’m afraid, isn’t flexible at this
 stage - it’s assumed to be of the type “%Y-%m-%dT%H:%M:%S”.</p>
 <p>I think there’s a 1900 leap year bug in Excel. I haven’t corrected
 for that.</p>
@@ -432,24 +432,26 @@ strings?</p>
 returns a list with fields ‘<em>result</em>’ set to the resulting
 data.frame and ‘<em>env</em>’ set to an internal environment that may be
 useful for debugging. <br /></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">read_xlsb</span>(<span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TestBook.xlsb&quot;</span>, <span class="at">package =</span> <span class="st">&quot;readxlsb&quot;</span>), <span class="at">range =</span> <span class="st">&quot;PORTFOLIO&quot;</span>, <span class="at">debug =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(res<span class="sc">$</span>env)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;content&quot;      &quot;named_ranges&quot; &quot;sheets&quot;       &quot;stream&quot;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>env<span class="sc">$</span>named_ranges</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             name                     range sheet_idx first_column first_row</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   INFO_RELEASE          FirstSheet!$A$11         0            1        11</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2        OUTLOOK &#39;My SecondTab&#39;!$A$1:$C$13         1            1         1</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      PORTFOLIO      FirstSheet!$A$3:$C$9         0            1         3</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 SAVED_DATETIME          FirstSheet!$C$13         0            3        13</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          TITLE           FirstSheet!$A$1         0            1         1</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   last_column last_row</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1           1       11</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2           3       13</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3           3        9</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4           3       13</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5           1        1</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">read_xlsb</span>(<span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TestBook.xlsb&quot;</span>, <span class="at">package =</span> <span class="st">&quot;readxlsb&quot;</span>), <span class="at">range =</span> <span class="st">&quot;PORTFOLIO&quot;</span>, <span class="at">debug =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">ls</span>(res<span class="sc">$</span>env)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;content&quot;      &quot;named_ranges&quot; &quot;sheets&quot;       &quot;stream&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>res<span class="sc">$</span>env<span class="sc">$</span>named_ranges</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;             name                     range sheet_idx first_column first_row</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 1   INFO_RELEASE          FirstSheet!$A$11         0            1        11</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; 2        OUTLOOK &#39;My SecondTab&#39;!$A$1:$C$13         1            1         1</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; 3      PORTFOLIO      FirstSheet!$A$3:$C$9         0            1         3</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 4 SAVED_DATETIME          FirstSheet!$C$14         0            3        14</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 5          TITLE           FirstSheet!$A$1         0            1         1</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; 6    UNICODE_STR          FirstSheet!$A$12         0            1        12</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;   last_column last_row</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 1           1       11</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; 2           3       13</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; 3           3        9</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; 4           3       14</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; 5           1        1</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 6           1       12</span></span></code></pre></div>
 </div>
 
 
