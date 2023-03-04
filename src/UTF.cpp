@@ -1,8 +1,7 @@
-#include <string_view>
 #include <cstddef>
-#include <string>
 #include <stdexcept>
 #include <utility>
+#include <cstdint>
 #include "UTF.h"
 
 namespace utf {
